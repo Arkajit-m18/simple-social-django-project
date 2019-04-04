@@ -1,0 +1,16 @@
+{% extends 'posts/post_base.html' %}
+{% load bootstrap3 %}
+{% block post_content %}
+<div class="container">
+    {% if form.instance.pk %}
+        <h1>Update Comment:</h1>
+    {% else %}
+        <h1>Edit Comment:</h1>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" class="btn btn-primary" value="Post Comment">
+    </form>
+</div>
+{% endblock %}

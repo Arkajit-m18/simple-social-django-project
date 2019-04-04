@@ -1,0 +1,34 @@
+{% extends 'posts/post_base.html' %}
+{% block post_content %}
+    <div class="container">
+        <h1 class="postcontent">{{ post.message | safe | linebreaks }}</h1>
+        <h4><a href="{% url 'posts:for_user' username=post.user.username %}">@{{ post.user.username }}</a></h4>
+    </div>
+</div>
+<hr>
+<div class="container">
+    <a href="{% url 'posts:comment' pk=post.pk %}" class="btn btn-primary btn-comment">Add Comment</a>
+    <div class="col-md-8">
+    {% for comment in post.comments.all %}
+        {% if user.is_authenticated or comment.approved_comment %}
+            <h6>Created: {{ comment.created_at }}</h6>
+            {% if not comment.approved_comment %}
+                {% if comment.author == user.username %}
+                    <a href="{% url 'posts:edit_comment' pk=comment.pk %}" class="btn btn-warning"><span
+                        class="glyphicon glyphicon-pencil"></span></a>
+                {% else %}
+                    <a href="{% url 'posts:approve_comment' pk=comment.pk %}" class="btn btn-success"><span
+                        class="glyphicon glyphicon-ok"></span></a>
+                {% endif %}
+                <a href="{% url 'posts:delete_comment' pk=comment.pk %}" class="btn btn-danger"><span
+                    class="glyphicon glyphicon-remove"></span></a>
+            {% endif %}
+            <h4>{{ comment.text | safe | linebreaks }}</h4>
+            <u><p>Posted by: <a href="{% url 'posts:for_user' username=comment.author %}"><b>@{{ comment.author }}</b></a></p></u>
+            <hr>
+        {% endif %}
+        {% empty %}
+            <h6>No Comments</h6>
+    {% endfor %}
+    </div>
+{% endblock %}
